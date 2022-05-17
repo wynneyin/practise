@@ -1,7 +1,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "sm4.h"
-
+#include<iostream>
+using namespace std;
 /*
  * 32-bit integer manipulation macros (big endian)
  */
@@ -243,6 +244,25 @@ void sm4_crypt_ecb(sm4_context* ctx,
 }
 int main()
 {
+
     sm4_context* ctx;
-    sm4_setkey();
+    ctx = (sm4_context *) (malloc(sizeof(sm4_context)));
+    ctx->mode = 0;
+    ctx->sk[32] = {};
+    unsigned char key[16] = { 0x15,0x67,0x28,0xe1,0x5f,0x9a,0xfc,0x01,0xd4,0xb6,0x1b,0x4e,0x44,0x5d,0xbb,0x26 };
+    unsigned char source[20] = { 0x41,0x12,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x10, 0x11,0x12,0x13,0x14,0x15,0x16,0x17,0x18,0x19,0x20 };
+    unsigned char output[48] = {};
+    sm4_setkey_enc(ctx, key);
+    sm4_crypt_ecb(ctx, ctx->mode, 20, source, output);
+    for (int i = 0; i < 48; i++)
+    {
+        cout << int(output[i])<<" ";
+    }
+    sm4_setkey_dec(ctx, key);
+    sm4_crypt_ecb(ctx, ctx->mode, 20, output, output);
+    for (int i = 0; i < 48; i++)
+    {
+        cout << int(output[i]) << " ";
+    }
+
 }
